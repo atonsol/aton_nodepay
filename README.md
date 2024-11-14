@@ -8,7 +8,7 @@ Automate farming Nodepay Network using proxies. Please use the bypass version. I
 - Press F12 or CTRL + SHIFT + I
 - Select Console
 - At the console, type ```allow pasting``` and press enter
-- image
+![pasting](https://github.com/user-attachments/assets/7f375bf4-12dd-4315-a3ae-4c043a7aae9f)
 - Then type ``localStorage.getItem('np_token')`` and press enter
 - image
 - The text that appears is your nodepay token and copy the text
