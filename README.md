@@ -10,7 +10,7 @@ Automate farming Nodepay Network using proxies. Please use the bypass version. I
 - At the console, type ```allow pasting``` and press enter
 ![pasting](https://github.com/user-attachments/assets/7f375bf4-12dd-4315-a3ae-4c043a7aae9f)
 - Then type ``localStorage.getItem('np_token')`` and press enter
-- image
+![nodepaytoken](https://github.com/user-attachments/assets/12e7871f-5fe1-4bca-8f0e-12784efc99dc)
 - The text that appears is your nodepay token and copy the text
 ### Component installation
 - Install Python For Windows: [Python](https://www.python.org/ftp/python/3.13.0/python-3.13.0-amd64.exe)
