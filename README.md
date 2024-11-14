@@ -35,7 +35,6 @@ python run.py
 ```bash
 python run-bypass.py
 ```
-- Press Enter then insert your nodepay token
 # Operating status
 If the following log appears, it means it is running successfully.
 ```bash
