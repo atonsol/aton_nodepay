@@ -30,9 +30,19 @@ TOKEN_FILE = 'token_id.txt'
 DOMAIN_API = {
     # http://18.136.143.169/api/auth/session / rolling back just for auth
     "SESSION": "https://api.nodepay.ai/api/auth/session",
+    #backup
+    # "http://api.nodepay.ai/api/auth/session"
+    
     #"PING": "http://54.255.192.166/api/network/ping"
     #"PING": "http://52.77.10.116/api/network/ping"
     "PING": "http://13.215.134.222/api/network/ping"
+    #backup
+    #"PING": [
+    #    "http://54.255.192.166/api/network/ping",
+    #    "http://52.77.10.116/api/network/ping",
+    #    "http://13.215.134.222/api/network/ping"
+    #]
+    
 }
 
 CONNECTION_STATES = {
