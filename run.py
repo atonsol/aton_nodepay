@@ -16,6 +16,7 @@ def show_warning():
 # Constants
 PING_INTERVAL = 60
 RETRIES = 60
+TOKEN_FILE = 'token_id.txt'  
 
 DOMAIN_API = {
     "SESSION": "https://api.nodepay.ai/api/auth/session",
@@ -156,7 +157,6 @@ def handle_logout(proxy):
     save_status(proxy, None)
     logger.info(f"Logged out and cleared session info for proxy {proxy}")
 
-#add proxy
 def load_proxies(proxy_file):
     try:
         with open(proxy_file, 'r') as file:
@@ -165,16 +165,6 @@ def load_proxies(proxy_file):
     except Exception as e:
         logger.error(f"Failed to load proxies: {e}")
         raise SystemExit("Exiting due to failure in loading proxies")
-        
-#add token        
-def load_token(token_file):
-    try:
-        with open(token_file, 'r') as file:
-            tokenid = file.read().splitlines()
-        return tokenid
-    except Exception as e:
-        logger.error(f"Failed to load tokenid: {e}")
-        raise SystemExit("Exiting due to failure in loading tokenid")       
 
 def save_status(proxy, status):
     pass  
@@ -195,40 +185,49 @@ def is_valid_proxy(proxy):
 def remove_proxy_from_list(proxy):
     pass  
 
+def load_tokens_from_file(filename):
+    try:
+        with open(filename, 'r') as file:
+            tokens = file.read().splitlines()
+        return tokens
+    except Exception as e:
+        logger.error(f"Failed to load tokens: {e}")
+        raise SystemExit("Exiting due to failure in loading tokens")
+
 async def main():
     all_proxies = load_proxies('proxy_list.txt')  
-    token = load_token('token_id.txt')
-    if not token:
-        print("Token cannot be empty. Exiting the program.")
-        exit()
+    tokens = load_tokens_from_file(TOKEN_FILE)
 
     while True:
-        active_proxies = [
-            proxy for proxy in all_proxies if is_valid_proxy(proxy)][:100]
-        tasks = {asyncio.create_task(render_profile_info(
-            proxy, token)): proxy for proxy in active_proxies}
+        for token in tokens:
+            active_proxies = [
+                proxy for proxy in all_proxies if is_valid_proxy(proxy)][:100]
+            tasks = {asyncio.create_task(render_profile_info(
+                proxy, token)): proxy for proxy in active_proxies}
 
-        done, pending = await asyncio.wait(tasks.keys(), return_when=asyncio.FIRST_COMPLETED)
-        for task in done:
-            failed_proxy = tasks[task]
-            if task.result() is None:
-                logger.info(f"Removing and replacing failed proxy: {failed_proxy}")
-                active_proxies.remove(failed_proxy)
-                if all_proxies:
-                    new_proxy = all_proxies.pop(0)
-                    if is_valid_proxy(new_proxy):
-                        active_proxies.append(new_proxy)
-                        new_task = asyncio.create_task(
-                            render_profile_info(new_proxy, token))
-                        tasks[new_task] = new_proxy
-            tasks.pop(task)
+            done, pending = await asyncio.wait(tasks.keys(), return_when=asyncio.FIRST_COMPLETED)
+            for task in done:
+                failed_proxy = tasks[task]
+                if task.result() is None:
+                    logger.info(f"Removing and replacing failed proxy: {failed_proxy}")
+                    active_proxies.remove(failed_proxy)
+                    if all_proxies:
+                        new_proxy = all_proxies.pop(0)
+                        if is_valid_proxy(new_proxy):
+                            active_proxies.append(new_proxy)
+                            new_task = asyncio.create_task(
+                                render_profile_info(new_proxy, token))
+                            tasks[new_task] = new_proxy
+                tasks.pop(task)
 
-        for proxy in set(active_proxies) - set(tasks.values()):
-            new_task = asyncio.create_task(
-                render_profile_info(proxy, token))
-            tasks[new_task] = proxy
-        await asyncio.sleep(3)
-    await asyncio.sleep(10)  
+            for proxy in set(active_proxies) - set(tasks.values()):
+                new_task = asyncio.create_task(
+                    render_profile_info(proxy, token))
+                tasks[new_task] = proxy
+
+           
+            await asyncio.sleep(3)
+        await asyncio.sleep(10)   
 
 if __name__ == '__main__':
     show_warning()
