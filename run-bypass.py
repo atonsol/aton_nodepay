@@ -185,7 +185,6 @@ def handle_logout(proxy):
     save_status(proxy, None)
     logger.info(f"Logged out and cleared session info for proxy {proxy}")
 
-#add proxy
 def load_proxies(proxy_file):
     try:
         with open(proxy_file, 'r') as file:
@@ -224,7 +223,7 @@ def load_tokens_from_file(filename):
         raise SystemExit("Exiting due to failure in loading tokens")
 
 async def main():
-    all_proxies = load_proxies('proxies.txt')  
+    all_proxies = load_proxies('proxy_list.txt')  
     tokens = load_tokens_from_file(TOKEN_FILE)
 
     while True:
